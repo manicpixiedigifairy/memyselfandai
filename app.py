@@ -5,8 +5,29 @@ import random
 # import spaces #[uncomment to use ZeroGPU]
 from diffusers import DiffusionPipeline
 import torch
+def upload_to_wix(image_path, prompt, seed):
+    url = "https://memyselfandai.art/_functions/saveGeneratedImage"
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+    # Modify if needed: Ensure image path is accessible externally
+    image_url = f"https://your-huggingface-space-url/{image_path}"
+
+    data = {
+        "imageUrl": image_url,
+        "conceptTitle": prompt,
+        "creatorName": "AI Generator",
+        "description": f"AI-generated image for prompt: {prompt}",
+        "tags": ["AI-art", "generated"],
+        "linkedin": ""
+    }
+
+    response = requests.post(url, json=data)
+
+    if response.status_code == 200:
+        print("✅ Image successfully uploaded to Wix:", response.json())
+    else:
+        print("❌ Error uploading image to Wix:", response.status_code, response.text)
+
+    return response.json()device = "cuda" if torch.cuda.is_available() else "cpu"
 model_repo_id = "stabilityai/sdxl-turbo"  # Replace to the model you would like to use
 
 if torch.cuda.is_available():
