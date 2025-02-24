@@ -59,6 +59,7 @@ def infer(
 
     generator = torch.Generator().manual_seed(seed)
 
+    # Generate the image using the AI model
     image = pipe(
         prompt=prompt,
         negative_prompt=negative_prompt,
@@ -68,6 +69,13 @@ def infer(
         height=height,
         generator=generator,
     ).images[0]
+
+    # Save the image locally inside Hugging Face Space
+    image_path = "static/generated_image.jpg"
+    image.save(image_path)
+
+    # Upload image to Wix Visitor Gallery
+    upload_to_wix(image_path, prompt, seed)
 
     return image, seed
 
